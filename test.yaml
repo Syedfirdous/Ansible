@@ -1,0 +1,31 @@
+---
+- name: Configure master and node servers
+  hosts: all
+  become: yes
+  vars:
+    master_ip: 192.168.56.10  # Change to your master IP
+    node_ips:
+      - 192.168.56.11         # Change to your node1 IP
+      - 192.168.56.12         # Change to your node2 IP
+  tasks:
+    - name: Set hostname for master
+      hostname:
+        name: master
+      when: inventory_hostname == master_ip
+
+    - name: Set hostname for node1
+      hostname:
+        name: node1
+      when: inventory_hostname == node_ips[0]
+
+    - name: Set hostname for node2
+      hostname:
+        name: node2
+      when: inventory_hostname == node_ips[1]
+
+    - name: Ensure basic packages are installed
+      package:
+        name:
+          - git
+          - curl
+        state: present
